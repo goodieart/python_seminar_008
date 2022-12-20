@@ -13,6 +13,7 @@ connection = None
 cursor = None
 
 first_row = 0
+current_row = 0
 
 
 def db_connect(file: str):
@@ -31,28 +32,43 @@ def get_persons_count():
 
 
 def print_persons(values: list):
-    clear()
+    #clear()
+    j = 0
     for i in values:
-        print('\t|'.join(list(map(str, i))))
+        j += 1
+        print('   ' if current_row != j else ' > ' ,'\t|'.join(list(map(str, i))))
 
 def show_persons_menu():
-    pass
+    clear()
+    show_ui('enter - выбор по id')
+    print_persons(get_persons(PRINT_COUNT, first_row))
+    sleep(0.2)
+
+def show_ui(prompt: str):
+    print(f'--------------------------------')
+    print(f'| {prompt}' + (29 - len(prompt)) * ' ' + '|')
+    print(f'--------------------------------')
 
 
 db_connect('accounts.db')
 # print_persons(get_persons(2, 1))
 # print(get_persons_count())
-print_persons(get_persons(10, first_row))
+show_persons_menu()
 while True:
     if keyboard.is_pressed('down'):
         gp = get_persons_count()
         if gp > 10:
-            first_row += 1 if first_row < gp else 0
-            print_persons(get_persons(10, first_row))
-            sleep(0.2)
+            current_row += 1
+            if current_row > PRINT_COUNT:
+                first_row += 1 if first_row < gp else 0
+                current_row -= 1
+            show_persons_menu()
     elif keyboard.is_pressed('up'):
         gp = get_persons_count()
         if gp > 10:
-            first_row -= 1 if first_row > 0 else 0
-            print_persons(get_persons(10, first_row))
-            sleep(0.2)
+            current_row -= 1
+            if current_row <= 0:
+                first_row -= 1 if first_row > 0 else 0
+                current_row += 1
+            show_persons_menu()
+
