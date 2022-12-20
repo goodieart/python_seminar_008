@@ -56,13 +56,3 @@ while True:
             first_row -= 1 if first_row > 0 else 0
             print_persons(get_persons(10, first_row))
             sleep(0.2)
-
-
-# import keyboard  # using module keyboard
-# while True:  # making a loop
-#     try:  # used try so that if user pressed other than the given key error will not be shown
-#         if keyboard.is_pressed('q'):  # if key 'q' is pressed 
-#             print('You Pressed A Key!')
-#             break  # finishing the loop
-#     except:
-#         break  # if user pressed a key
