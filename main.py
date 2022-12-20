@@ -6,7 +6,6 @@ from time import sleep
 clear = lambda: os.system('cls')
 
 PRINT_COUNT = 10
-
 KEY_DOWN = 40
 
 connection = None
@@ -14,6 +13,8 @@ cursor = None
 
 first_row = 0
 current_row = 0
+
+current_persons = []
 
 
 def db_connect(file: str):
@@ -32,16 +33,18 @@ def get_persons_count():
 
 
 def print_persons(values: list):
-    #clear()
     j = 0
     for i in values:
         j += 1
         print('   ' if current_row != j else ' > ' ,'\t|'.join(list(map(str, i))))
 
 def show_persons_menu():
+    global current_persons
     clear()
     show_ui('enter - выбор по id')
-    print_persons(get_persons(PRINT_COUNT, first_row))
+    current_persons = get_persons(PRINT_COUNT, first_row)
+    print_persons(current_persons)
+    show_ui(f'{first_row},{current_row}')
     sleep(0.2)
 
 def show_ui(prompt: str):
@@ -49,10 +52,11 @@ def show_ui(prompt: str):
     print(f'| {prompt}' + (29 - len(prompt)) * ' ' + '|')
     print(f'--------------------------------')
 
+def show_person_card():
+    print(current_persons[current_row - 1])
+    #exit()
 
 db_connect('accounts.db')
-# print_persons(get_persons(2, 1))
-# print(get_persons_count())
 show_persons_menu()
 while True:
     if keyboard.is_pressed('down'):
@@ -71,4 +75,8 @@ while True:
                 first_row -= 1 if first_row > 0 else 0
                 current_row += 1
             show_persons_menu()
-
+    elif keyboard.is_pressed('esc'):
+        break
+    elif keyboard.is_pressed('enter'):
+        show_person_card()
+        sleep(0.2)
