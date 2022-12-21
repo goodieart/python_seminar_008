@@ -3,10 +3,11 @@ import keyboard
 import os
 from time import sleep
 
-clear = lambda: os.system('cls')
+
+def clear(): return os.system('cls')
+
 
 PRINT_COUNT = 10
-KEY_DOWN = 40
 
 connection = None
 cursor = None
@@ -28,6 +29,7 @@ def get_persons(limit: int = 0, offset: int = 0):
     o = (f' OFFSET {offset}' if offset != 0 else '')
     return list(cursor.execute(f'SELECT * FROM persons{l}{o}'))
 
+
 def get_persons_count():
     return list(cursor.execute('SELECT COUNT (*) FROM persons'))[0][0]
 
@@ -36,7 +38,9 @@ def print_persons(values: list):
     j = 0
     for i in values:
         j += 1
-        print('   ' if current_row != j else ' > ' ,'\t|'.join(list(map(str, i))))
+        print('   ' if current_row != j else ' > ', '\t|'.join(
+            list(map(lambda x: str(x)[0:5] + ('>' if len(str(x)) > 5 else ''), i))))
+
 
 def show_persons_menu():
     global current_persons
@@ -47,14 +51,16 @@ def show_persons_menu():
     show_ui(f'{first_row},{current_row}')
     sleep(0.2)
 
+
 def show_ui(prompt: str):
     print(f'--------------------------------')
     print(f'| {prompt}' + (29 - len(prompt)) * ' ' + '|')
     print(f'--------------------------------')
 
+
 def show_person_card():
     print(current_persons[current_row - 1])
-    #exit()
+
 
 db_connect('accounts.db')
 show_persons_menu()
