@@ -35,9 +35,10 @@ def db_connect(file: str):
 
 def get_persons(limit: int = 0, offset: int = 0):
     global cursor
+    q = 'SELECT * FROM persons'
     l = (f' LIMIT {limit}' if limit != 0 else '')
     o = (f' OFFSET {offset}' if offset != 0 else '')
-    return list(cursor.execute(f'SELECT * FROM persons{l}{o}'))
+    return list(cursor.execute(f'{q}{l}{o}'))
 
 
 def get_accounts(person, limit: int = 0, offset: int = 0):
@@ -45,7 +46,6 @@ def get_accounts(person, limit: int = 0, offset: int = 0):
     q = f'SELECT accounts.id, accounts.number, accounts.balance FROM accounts WHERE accounts.person_id = {person[0]}'
     l = (f' LIMIT {limit}' if limit != 0 else '')
     o = (f' OFFSET {offset}' if offset != 0 else '')
-    #print(f'{q}{l}{o}')
     return list(cursor.execute(f'{q}{l}{o}'))
 
 
@@ -81,6 +81,9 @@ def show_accounts_menu():
     print_list(current_accounts)
     show_ui('n - новый | s - отправить | esc - назад', 64)
 
+def show_new_account_menu():
+    pass
+
 
 def show_ui(prompt: str, width: int = 32):
     print('-' * width)
@@ -90,7 +93,6 @@ def show_ui(prompt: str, width: int = 32):
 
 def show_person_card():
     p = current_persons[current_row - 1]
-    #print(p)
     change_screen(SCR_PERS_CARD)
     show_accounts_menu()
 
@@ -105,7 +107,6 @@ def get_person_from_list(cred: bool):
     global cred_person, debt_person
     if cred:
         cred_person = current_persons[current_row - 1]
-        #print(cred_person)
         return cred_person
     else:
         debt_person = current_persons[current_row - 1]
@@ -137,7 +138,6 @@ db_connect('accounts.db')
 show_persons_menu()
 while True:
     if keyboard.is_pressed('down'):
-
         if current_screen == SCR_PERS_LIST:
             scroll_persons_list('down')
             show_persons_menu()
