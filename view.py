@@ -35,7 +35,7 @@ def print_list(values: list):
 def show_persons_menu(persons):
     global current_persons
     clear()
-    show_ui('enter - выбор по id')
+    show_ui('Список клиентов банка')
     current_persons = persons
     print_list(current_persons)
     show_ui('c - добавить | esc - выйти')
@@ -70,7 +70,6 @@ def show_ui(prompt: str, width: int = 32):
 
 
 def show_person_card(accounts):
-    p = current_persons[current_row - 1]
     ui_set_screen(SCR_PERS_CARD)
     show_accounts_menu(accounts)
 
@@ -107,15 +106,14 @@ def ui_get_row_offset():
 
 def scroll_persons_list(persons_count: int, direction: str):
     global current_row, first_row
-    gp = persons_count
     if direction == 'down':
-        if gp > 10:
+        if persons_count > 10:
             current_row += 1
             if current_row > PRINT_COUNT:
-                first_row += 1 if first_row < gp else 0
+                first_row += 1 if first_row < persons_count else 0
                 current_row -= 1
     elif direction == 'up':
-        if gp > 10:
+        if persons_count > 10:
             current_row -= 1
             if current_row <= 0:
                 first_row -= 1 if first_row > 0 else 0
@@ -124,7 +122,7 @@ def scroll_persons_list(persons_count: int, direction: str):
 
 
 def get_person_from_list(cred: bool):
-    global cred_person, debt_person
+    global cred_person, debt_person, current_persons, current_row
     if cred:
         cred_person = current_persons[current_row - 1]
         return cred_person

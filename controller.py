@@ -3,17 +3,12 @@ from logger import *
 from model import *
 from view import *
 
-# Обработка ввода
-
-
-
 
 def start():
     def on_release(key):
         pass
 
     def on_press(key):
-        global cred_number_input, new_client_fcs_input ,current_screen
         try:
             k = key.char
             if ui_get_screen() == SCR_PERS_LIST:
@@ -30,19 +25,22 @@ def start():
             elif ui_get_screen() == SCR_PERS_CARD_ADD:
                 if k in [str(i) for i in range(10)]:
                     ui_set_cred_number(k)
-                    show_new_account_menu()                
+                    show_new_account_menu()
         except AttributeError:
             if ui_get_screen() == SCR_PERS_LIST:
                 if key == keyboard.Key.down:
                     scroll_persons_list(get_persons_count(), 'down')
-                    show_persons_menu(get_persons(PRINT_COUNT, ui_get_row_offset()))
+                    show_persons_menu(get_persons(
+                        PRINT_COUNT, ui_get_row_offset()))
                 elif key == keyboard.Key.up:
                     scroll_persons_list(get_persons_count(), 'up')
-                    show_persons_menu(get_persons(PRINT_COUNT, ui_get_row_offset()))
+                    show_persons_menu(get_persons(
+                        PRINT_COUNT, ui_get_row_offset()))
                 elif key == keyboard.Key.enter:
-                    show_person_card(get_accounts(get_person_from_list(True), PRINT_COUNT, ui_get_row_offset()))
+                    show_person_card(get_accounts(get_person_from_list(
+                        True)))
                 elif key == keyboard.Key.esc:
-                    pass   
+                    pass
             elif ui_get_screen() == SCR_PERS_ADD:
                 if key == keyboard.Key.space:
                     ui_set_person_fcs(' ')
@@ -52,14 +50,21 @@ def start():
                     create_person(ui_get_person_fcs().split())
                     ui_set_person_fcs('', False)
                     ui_set_screen(SCR_PERS_LIST)
-                    show_persons_menu(get_persons(PRINT_COUNT, first_row))
+                    show_persons_menu(get_persons(
+                        PRINT_COUNT, ui_get_row_offset()))
             elif ui_get_screen() == SCR_PERS_CARD_ADD:
                 if key == keyboard.Key.enter:
                     p_id = get_person_from_list(True)[0]
                     create_account(ui_get_cred_number(), p_id)
                     ui_set_cred_number('', False)
                     ui_set_screen(SCR_PERS_CARD)
-                    show_person_card(get_accounts(get_person_from_list(True), PRINT_COUNT, ui_get_row_offset()))                                       
+                    show_person_card(get_accounts(get_person_from_list(
+                        True)))
+            elif ui_get_screen() == SCR_PERS_CARD:
+                if key == keyboard.Key.esc:
+                    ui_set_screen(SCR_PERS_LIST)
+                    show_persons_menu(get_persons(
+                        PRINT_COUNT, ui_get_row_offset()))
 
         # try:
         #     if current_screen == SCR_PERS_CARD_ADD:
@@ -108,10 +113,11 @@ def start():
         #     elif key == keyboard.Key.enter:
         #         if current_screen == SCR_PERS_LIST:
         #             show_person_card()
-    db_connect('accounts.db')    
-    listener = keyboard.Listener(on_press = on_press, on_release = on_release)
+    db_connect('accounts.db')
+    listener = keyboard.Listener(on_press   = on_press, 
+                                 on_release = on_release)
     listener.start()
     #show_persons_menu(get_persons(PRINT_COUNT, first_row))
-   
+
     while True:
         sleep(0.1)

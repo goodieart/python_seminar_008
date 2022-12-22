@@ -29,6 +29,9 @@ def get_accounts(person, limit: int = 0, offset: int = 0):
 def get_persons_count():
     return list(cursor.execute('SELECT COUNT (*) FROM persons'))[0][0]
 
+def get_accounts_count(person_id: int):
+    return list(cursor.execute(f'SELECT COUNT (*) FROM accounts WHERE person_id = {person_id}'))
+
 
 def create_account(number: str, person_id: str):
     row = (number, person_id)
